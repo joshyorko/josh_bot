@@ -9,12 +9,9 @@ services:
             - driver: nvidia
               capabilities: [gpu]
     volumes:
-      - ollama:/root/.ollama
+      - /home/kdlocpanda/personal/my_repos/josh_bot/data/ollama:/root/.ollama
+      - /home/kdlocpanda/personal/my_repos/josh_bot/Modelfile.txt:/root/.ollama/Modelfile
     ports:
       - "11434:11434"
-
-
-
-
 volumes:
   ollama:

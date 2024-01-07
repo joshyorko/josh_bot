@@ -22,8 +22,8 @@ class WebScraper:
         else:
             self.llm = ChatOpenAI(model=model_name)
 
-    #def extract(self, content: str, schema: dict):
-    #    return create_extraction_chain(schema=schema, llm=self.llm).run(content)
+    def extract(self, content: str, schema: dict):
+    z    return create_extraction_chain(schema=schema, llm=self.llm).run(content)
 #
     def scrape_with_playwright(self,urls, schema):
         loader = AsyncChromiumLoader(urls)

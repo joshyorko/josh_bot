@@ -1,17 +1,17 @@
 import sys
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chat_models import  ChatOllama
+from langchain_community.chat_models import  ChatOllama
 import os  
-from langchain.document_loaders import PyPDFLoader
-from langchain.vectorstores.chroma import Chroma
-from langchain.embeddings import GPT4AllEmbeddings
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.vectorstores.chroma import Chroma
+from langchain_community.embeddings import GPT4AllEmbeddings
 
-from langchain.indexes import VectorstoreIndexCreator
+from langchain_community.indexes import VectorstoreIndexCreator
 from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 
-from langchain.callbacks.manager import CallbackManager
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.indexes import VectorstoreIndexCreator
+from langchain_community.callbacks.manager import CallbackManager
+from langchain_community.callbacks.manager import StreamingStdOutCallbackHandler
+from langchain_community.indexes import VectorstoreIndexCreator
 
 
 
