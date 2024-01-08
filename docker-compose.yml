@@ -13,5 +13,18 @@ services:
       - /home/kdlocpanda/personal/my_repos/josh_bot/Modelfile.txt:/root/.ollama/Modelfile
     ports:
       - "11434:11434"
+    networks:
+      - ollama_network
+  chatbot:
+    build: ./chatbot
+    ports:
+      - "8501:8501"
+    depends_on:
+      - ollama
+    networks:
+      - ollama_network
+    command:  ["streamlit", "run", "app.py"]
 volumes:
   ollama:
+networks:
+  ollama_network:
