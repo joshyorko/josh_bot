@@ -7,7 +7,7 @@ from langchain_community.llms.ollama import Ollama
 
 
 
-BASE_URL = "http://ollama:11434"
+BASE_URL = "http://llm_network:11434"
 
 def list_models():
     response = requests.get(f"{BASE_URL}/api/tags")

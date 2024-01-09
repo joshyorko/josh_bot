@@ -2,7 +2,7 @@ from openai import OpenAI
 import streamlit as st
 
 client = OpenAI(
-    base_url="http://0.0.0.0:8081/v1", # "http://<Your api-server IP>:port"
+    base_url="http://llm_network:8081/v1", # "http://<Your api-server IP>:port"
     api_key = "sk-no-key-required"
 )
 
