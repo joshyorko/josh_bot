@@ -11,20 +11,40 @@ services:
     volumes:
       - /home/kdlocpanda/personal/my_repos/josh_bot/data/ollama:/root/.ollama
       - /home/kdlocpanda/personal/my_repos/josh_bot/Modelfile.txt:/root/.ollama/Modelfile
+    restart: unless-stopped
     ports:
       - "11434:11434"
     networks:
-      - ollama_network
+      - llm_network
   chatbot:
     build: ./chatbot
     ports:
       - "8501:8501"
+    restart: unless-stopped
     depends_on:
       - ollama
     networks:
-      - ollama_network
-    command:  ["streamlit", "run", "app.py"]
+      - llm_network
+    command:  ["streamlit", "run", "ollama_bot.py"]
+
+  llamfile:
+    build: /home/kdlocpanda/personal/my_repos/josh_bot/llamfiles
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    ports:
+      - "8081:8081"
+    networks:
+      - llm_network
+    volumes:
+      - /home/kdlocpanda/personal/my_repos/josh_bot/llamfiles/models/mistral-7b-instruct-v0.1-Q4_K_M-server.llamafile:/usr/src/app/mistral-7b-instruct-v0.1-Q4_K_M-server.llamafile
+    command:  ["bash","./mistral-7b-instruct-v0.1-Q4_K_M-server.llamafile", "--port", "8081", "--host", "0.0.0.0","-ngl", "5"]
+
 volumes:
   ollama:
 networks:
-  ollama_network:
+  llm_network:

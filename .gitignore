@@ -16,7 +16,7 @@ data/
 *.swp
 *.swo
 *.swn
-
+llamfiles/models
 # OS
 .DS_Store
 Thumbs.db
