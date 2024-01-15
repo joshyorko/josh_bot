@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  
+  chatbot:
+    build: .
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
+
+    networks:
+      - llm_network
+    command:  ["streamlit", "run", "ollama_bot.py"]
+networks:
+  llm_network:
+    driver: bridge
+

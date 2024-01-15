@@ -30,7 +30,7 @@ ENV PYTHONPATH=/home/appuser/.local/lib/python3.10/site-packages
 RUN pip install --user -r requirements.txt
 
 VOLUME /data
-EXPOSE 80
+EXPOSE 8501
 
 
 
