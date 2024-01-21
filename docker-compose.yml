@@ -8,7 +8,6 @@ services:
           devices:
             - driver: nvidia
               capabilities: [gpu]
-              count: 1
     volumes:
       - /home/kdlocpanda/personal/my_repos/josh_bot/data/ollama:/root/.ollama
       - /home/kdlocpanda/personal/my_repos/josh_bot/Modelfile.txt:/root/.ollama/Modelfile
