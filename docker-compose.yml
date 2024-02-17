@@ -11,9 +11,7 @@ services:
               capabilities: [gpu]
               count: 1
     volumes:
-      - /home/kdlocpanda/personal/my_repos/josh_bot/data/ollama:/root/.ollama
-      - /home/kdlocpanda/personal/my_repos/josh_bot/Modelfile.txt:/root/.ollama/Modelfile
-      - /home/kdlocpanda/personal/my_repos/josh_bot/Modelfile2.txt:/root/.ollama/Modelfile2
+      - ollama_volume:/root/.ollama
     restart: unless-stopped
     ports:
       - "11434:11434"
@@ -24,18 +22,27 @@ services:
     build: ./chatbot
     ports:
       - "8501:8501"
+    volumes: 
+      - data_volume:/app/data
     restart: unless-stopped
-
     networks:
       - llm_network
     command:  ["streamlit", "run", "ollama_bot.py"]
 
-
 volumes:
-  ollama:
+  ollama_volume:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/kdlocpanda/personal/my_repos/josh_bot/data/ollama
+  data_volume:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/kdlocpanda/personal/my_repos/josh_bot/data/chatbot
+
 networks:
   llm_network:
     driver: bridge
-
-
-
