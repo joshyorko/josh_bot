@@ -1,5 +1,6 @@
-version: '3.8'
+version: "3.9"
 services:
+
   ollama:
     image: ollama/ollama
     deploy:
@@ -8,21 +9,23 @@ services:
           devices:
             - driver: nvidia
               capabilities: [gpu]
+              count: 1
     volumes:
       - /home/kdlocpanda/personal/my_repos/josh_bot/data/ollama:/root/.ollama
       - /home/kdlocpanda/personal/my_repos/josh_bot/Modelfile.txt:/root/.ollama/Modelfile
+      - /home/kdlocpanda/personal/my_repos/josh_bot/Modelfile2.txt:/root/.ollama/Modelfile2
     restart: unless-stopped
     ports:
       - "11434:11434"
     networks:
       - llm_network
+  
   chatbot:
     build: ./chatbot
     ports:
       - "8501:8501"
     restart: unless-stopped
-    depends_on:
-      - ollama
+
     networks:
       - llm_network
     command:  ["streamlit", "run", "ollama_bot.py"]
@@ -32,3 +35,7 @@ volumes:
   ollama:
 networks:
   llm_network:
+    driver: bridge
+
+
+

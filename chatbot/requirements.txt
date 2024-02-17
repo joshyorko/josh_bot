@@ -4,3 +4,4 @@ langchain-community
 streamlit
 requests
 openai
+duckduckgo-search
