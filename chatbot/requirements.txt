@@ -5,3 +5,4 @@ streamlit
 requests
 openai
 duckduckgo-search
+google-api-python-client

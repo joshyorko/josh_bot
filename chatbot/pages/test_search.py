@@ -6,7 +6,8 @@ from langchain_community.chat_models import ChatOllama
 from langchain.tools import DuckDuckGoSearchRun
 
 
-BASE_URL = "http://192.168.86.250:11434"
+
+BASE_URL = "http://192.168.86.29:11434"
 
 
 
@@ -34,6 +35,8 @@ if prompt := st.chat_input(placeholder="Who won the Women's U.S. Open in 2018?")
 
     llm = ChatOllama(model="mistral", base_url=BASE_URL)
     search = DuckDuckGoSearchRun(name="Search")
+
+    
     search_agent = initialize_agent([search], llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, handle_parsing_errors=True)
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
