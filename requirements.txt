@@ -1,1 +1,9 @@
 langchain-cli
+langchain-community
+langchain-core
+langchain-openai
+openai
+ollama
+streamlit
+pandas
+pyarrow

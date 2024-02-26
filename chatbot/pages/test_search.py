@@ -33,7 +33,7 @@ if prompt := st.chat_input(placeholder="Who won the Women's U.S. Open in 2018?")
     st.chat_message("user").write(prompt)
 
 
-    llm = ChatOllama(model="mistral", base_url=BASE_URL)
+    llm = ChatOllama(model="mistral:instruct", base_url=BASE_URL)
     search = DuckDuckGoSearchRun(name="Search")
 
     

@@ -65,8 +65,6 @@ image_b64 = None
 llm = Ollama(
         model=selected_model,
         base_url=BASE_URL,
-        num_gpu=1,
-        #callback_manager=CallbackManager([StreamingStdOutCallbackHandler()])
     )
 
 
