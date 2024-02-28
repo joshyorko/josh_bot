@@ -22,8 +22,7 @@ services:
     build: ./chatbot
     ports:
       - "8501:8501"
-    volumes: 
-      - data_volume:/app/data
+
     restart: unless-stopped
     networks:
       - llm_network
@@ -36,12 +35,6 @@ volumes:
       o: bind
       type: none
       device: /home/kdlocpanda/personal/my_repos/josh_bot/data/ollama
-  data_volume:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/kdlocpanda/personal/my_repos/josh_bot/data/chatbot
 
 networks:
   llm_network:

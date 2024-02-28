@@ -1,8 +1,13 @@
 langchain
-langchain-core
+langchain-cli
 langchain-community
+langchain-core
+langchain-openai
+ollama
+pandas
+pyarrow
+
 streamlit
 requests
 openai
 duckduckgo-search
-google-api-python-client

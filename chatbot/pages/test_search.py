@@ -1,45 +1,78 @@
-import streamlit as st
+from langchain.agents import ConversationalChatAgent, AgentExecutor
+from langchain.memory import ConversationBufferMemory
+from langchain_community.callbacks import StreamlitCallbackHandler
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+from langchain_community.tools import DuckDuckGoSearchRun
 
-from langchain.agents import initialize_agent, AgentType
-from langchain.callbacks import StreamlitCallbackHandler
+from langchain_core.runnables import RunnableConfig
 from langchain_community.chat_models import ChatOllama
-from langchain.tools import DuckDuckGoSearchRun
 
+import streamlit as st
+import requests
 
+search_tool = DuckDuckGoSearchRun(name="Search")
 
+tools=[search_tool]# You can modify the tool when loading
 BASE_URL = "http://192.168.86.29:11434"
 
+def list_models():
+    response = requests.get(f"{BASE_URL}/api/tags")
+    if response.status_code == 200:
+        models = response.json().get("models", [])
+        return [model["name"] for model in models]
+    else:
+        st.error("Failed to fetch models")
+        return []
+
+# List available models
+available_models = list_models()
 
 
+st.set_page_config(page_title="LangChain: Chat with search", page_icon="🦜")
+st.title("🦜 LangChain: Chat with search")
+with st.sidebar:
+    st.header("Model Selection")
+    selected_model = st.selectbox("Choose a model:", available_models)
 
+msgs = StreamlitChatMessageHistory()
+memory = ConversationBufferMemory(
+    chat_memory=msgs, return_messages=True, memory_key="chat_history", output_key="output"
+)
+if len(msgs.messages) == 0 or st.sidebar.button("Reset chat history"):
+    msgs.clear()
+    msgs.add_ai_message("How can I help you?")
+    st.session_state.steps = {}
 
-st.title("🔎 LangChain - Chat with search")
-
-"""
-In this example, we're using `StreamlitCallbackHandler` to display the thoughts and actions of an agent in an interactive Streamlit app.
-Try more LangChain 🤝 Streamlit Agent examples at [github.com/langchain-ai/streamlit-agent](https://github.com/langchain-ai/streamlit-agent).
-"""
-
-if "messages" not in st.session_state:
-    st.session_state["messages"] = [
-        {"role": "assistant", "content": "Hi, I'm a chatbot who can search the web. How can I help you?"}
-    ]
-
-for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+avatars = {"human": "user", "ai": "assistant"}
+for idx, msg in enumerate(msgs.messages):
+    with st.chat_message(avatars[msg.type]):
+        # Render intermediate steps if any were saved
+        for step in st.session_state.steps.get(str(idx), []):
+            if step[0].tool == "_Exception":
+                continue
+            with st.status(f"**{step[0].tool}**: {step[0].tool_input}", state="complete"):
+                st.write(step[0].log)
+                st.write(step[1])
+        st.write(msg.content)
 
 if prompt := st.chat_input(placeholder="Who won the Women's U.S. Open in 2018?"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
 
-
-    llm = ChatOllama(model="mistral:instruct", base_url=BASE_URL)
-    search = DuckDuckGoSearchRun(name="Search")
-
+   
+    llm = ChatOllama(model="mistral",base_url=BASE_URL)
     
-    search_agent = initialize_agent([search], llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, handle_parsing_errors=True)
+    chat_agent = ConversationalChatAgent.from_llm_and_tools(llm=llm, tools=tools)
+    executor = AgentExecutor.from_agent_and_tools(
+        agent=chat_agent,
+        tools=tools,
+        memory=memory,
+        return_intermediate_steps=True,
+        handle_parsing_errors=True,
+    )
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
-        response = search_agent.run(st.session_state.messages, callbacks=[st_cb])
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        st.write(response)
+        cfg = RunnableConfig()
+        cfg["callbacks"] = [st_cb]
+        response = executor.invoke(prompt, cfg)
+        st.write(response["output"])
+        st.session_state.steps[str(len(msgs.messages) - 1)] = response["intermediate_steps"]
