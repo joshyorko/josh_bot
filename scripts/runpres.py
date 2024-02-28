@@ -5,7 +5,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_community.chat_models import ChatOllama
 from rich import print as rprint
-from prompts import presidents
+from scripts.prompts import presidents
 import requests
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import WordCompleter
